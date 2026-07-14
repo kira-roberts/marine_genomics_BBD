@@ -1,0 +1,5 @@
+Starting flye bbd in /home/jc428818/Marine_Genomics/Workshop4 at Tue 14 Jul 2026 06:05:46 UTC
+[2026-07-14 06:05:46] INFO: Starting Flye 2.9.6-b1802
+[2026-07-14 06:05:46] ERROR: Can't open /home/jc428818/Marine_Genomics/raw_data/bbd_0.1.fastq.gz
+[2026-07-14 06:05:46] ERROR: Pipeline aborted
+Finished flye bbd in /home/jc428818/Marine_Genomics/Workshop4 at Tue 14 Jul 2026 06:05:46 UTC

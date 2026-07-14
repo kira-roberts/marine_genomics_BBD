@@ -1,0 +1,41 @@
+---
+title: "The Black Band Disease Metagenome"
+output: html_document
+date: "2026-07-14"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Background 
+
+
+
+
+
+## Assembly 
+
+
+sbatch flye/run_flye_bbd.sh
+
+
+## Binning with Metabat
+
+
+## Checking Bin Quality with Checkm 
+
+
+
+## Functional Analysis of the BBD Metagenome
+
+
+## Select Bins Based on Checkm Results
+
+
+## Perform Taxonomic Classification with gtdbtk 
+
+
+
+## Find and Annote Genes with Prokka
+
+
