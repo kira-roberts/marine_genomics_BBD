@@ -14,9 +14,23 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 ## Assembly 
+In the *flye* directory, we made a symbolic link to the BBD read data.
+```
+ln -s /pvol/data/metagenome_assembly/bbd_0.1.fastq.gz .
+``` 
+Before created a shell script containing the script below. 
+```
+#!/bin/bash
+#SBATCH --time=720
+#SBATCH --ntasks=12 --mem=10gb
 
+echo "Starting flye bbd in $(pwd) at $(date)"
 
-sbatch flye/run_flye_bbd.sh
+flye --nano-hq ../raw_data/bbd_0.1.fastq.gz --threads 12 --out-dir bbd --meta
+
+echo "Finished flye bbd in $(pwd) at $(date)"
+```
+
 
 
 ## Binning with Metabat
