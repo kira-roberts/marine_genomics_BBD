@@ -1,1 +1,1 @@
-# marine_genomics
+This repository contains the code needed for the metagenome assembly of Black Band Disease as part of the third module in the the class MB5370, Techniques in Marine Science. The module has us working on real genomic data, assembling the genomes of the bacteria that cause the Black Band Disease in coral. As the code is very extensive, it has been split into several markdown files. 
