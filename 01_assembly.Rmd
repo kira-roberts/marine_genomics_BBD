@@ -26,30 +26,9 @@ Before created a shell script containing the script below.
 
 echo "Starting flye bbd in $(pwd) at $(date)"
 
-flye --nano-hq ../raw_data/bbd_0.1.fastq.gz --threads 12 --out-dir bbd --meta
+flye --nano-hq bbd_0.1.fastq.gz --threads 12 --out-dir bbd --meta
 
 echo "Finished flye bbd in $(pwd) at $(date)"
 ```
-
-
-
-## Binning with Metabat
-
-
-## Checking Bin Quality with Checkm 
-
-
-
-## Functional Analysis of the BBD Metagenome
-
-
-## Select Bins Based on Checkm Results
-
-
-## Perform Taxonomic Classification with gtdbtk 
-
-
-
-## Find and Annote Genes with Prokka
-
+*job 511*
 

@@ -1,0 +1,27 @@
+---
+title: "02_gtdbtk.Rmd"
+output: html_document
+date: "2026-07-15"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Perform Taxonomic Classification with gtdbtk 
+
+
+while read bin;do echo $bin;done < ../checkm/bbd_topbins.txt
+
+while read bin;do echo "../metabat/bins_bbd/${bin}.fa";done < ../checkm/bbd_topbins.txt
+
+
+while read bin;do cp "../metabat/bins_bbd/${bin}.fa" genomes;done < ../checkm/bbd_topbins.txt
+
+```{r}
+library(tidyverse)
+gtdbtk_result <- read_tsv("gtdbtk/out/gtdbtk.bac120.summary.tsv")
+view(gtdbtk_result)
+```
+
+
+

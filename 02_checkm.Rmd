@@ -1,9 +1,0 @@
----
-title: "02_checkm.Rmd"
-output: html_document
-date: "2026-07-14"
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```

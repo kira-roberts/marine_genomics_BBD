@@ -1,0 +1,20 @@
+---
+title: "01_binning.Rmd"
+output: html_document
+date: "2026-07-14"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Binning with Metabat
+
+Now that we have the flye assembly output, we can begin the binning process using metabat in it's own directory. 
+We used grep and awk to extract the depth information before reordering the contigs based on depth with samtools and actually running metabat. 
+```bash
+cat ../flye/bbd/assembly_info.txt  | grep -v '#' | awk '{OFS="\t";print $1,$3}' > depths_bbd.txt
+
+cat ../flye/depths_bbd.txt | awk '{print $1}' | xargs samtools faidx ../flye/bbd/assembly.fasta > assembly_bbd_ordered.fasta
+
+metabat2 -i assembly_bbd_ordered.fasta -a depths_bbd.txt --cvExt -o bins_bbd/metabat --seed 5
+```
