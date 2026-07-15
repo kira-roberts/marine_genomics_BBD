@@ -1,0 +1,11 @@
+---
+title: "03_prokka.Rmd"
+output: html_document
+date: "2026-07-15"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Find and Annote Genes with Prokka
