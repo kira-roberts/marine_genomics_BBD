@@ -10,7 +10,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Find and Annote Genes with Prokka
 
+```bash
+head -n 1 ../checkm/bbd_topbins.txt 
+```
+metabat.26 
 
+```bash 
+bin=metabat.26
+prokka --outdir $bin --prefix $bin  ../metabat/bins_bbd/${bin}.fa
+
+```
 
 
 
