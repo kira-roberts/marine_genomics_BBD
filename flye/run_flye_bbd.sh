@@ -4,6 +4,6 @@
 
 echo "Starting flye bbd in $(pwd) at $(date)"
 
-flye --nano-hq ../raw_data/bbd_0.1.fastq.gz --threads 12 --out-dir bbd --meta
+flye --nano-hq bbd_0.1.fastq.gz --threads 12 --out-dir bbd --meta
 
 echo "Finished flye bbd in $(pwd) at $(date)"
