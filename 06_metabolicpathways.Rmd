@@ -1,0 +1,80 @@
+---
+title: "03_metabolicpathways.Rmd"
+output: html_document
+date: "2026-07-15"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Infer metabolic pathways
+```
+head ../prokka/metabat.26/metabat.26.tsv
+
+
+head ../prokka/metabat.26/metabat.26.tsv | awk -F '\t' '{print $1,$5}'
+
+
+head ../prokka/metabat.26/metabat.26.tsv | awk -F '\t' '$5{print $1,$5}'
+
+
+head ../prokka/metabat.26/metabat.26.tsv | awk -F '\t' '$5{OFS="\t";print $1,$5}' | grep -v '^locus'
+
+cat ../prokka/metabat.26/metabat.26.tsv | awk -F '\t' '$5{OFS="\t";print $1,$5}' | grep -v '^locus'
+
+cat ../prokka/metabat.26/metabat.26.tsv | awk -F '\t' '$5{OFS="\t";print $1,$5}' | grep -v '^locus' > metabat.26.ec
+
+minpath -ec metabat.26.ec -report metabat.26.ec.report -details metabat.26.ec.details
+
+head metabat.26.ec.report
+```
+The first line of the output produced: 
+path PWY-7321 any n/a  naive 1  minpath 1  fam0  4  fam-found  2  name  ecdysteroid metabolism (arthropods)
+
+Important parts of this line are
+
+**PWY-7321** which is a pathway identifier in the metacyc database. You can use this to lookup the full pathway
+**fam0 4** tells us that four gene families are involved in this pathway
+**fam-found 2** tells us that we found 2 gene families from the pathway in this genome
+**name ecdysteroid metabolism (arthropods)** is a name for the pathway
+
+
+
+```
+while read bin;do 
+  cat ../prokka/$bin/${bin}.tsv | awk -F '\t' '$5{printf("%s\t%s\n", $1,$5)}' | grep -v '^locus' > ${bin}.ec 
+done < ../checkm/bbd_topbins.txt
+
+
+while read bin;do 
+  minpath -ec ${bin}.ec -report ${bin}.ec.report -details ${bin}.ec.details
+done < ../checkm/bbd_topbins.txt
+```
+There is a huge amount of information in the outputs from minpath. To keep things tractable we are just going to look at two pathways.
+
+The first pathway is named photosynthesis light reactions and has the metacyc code PWY-101. This pathway includes the essential components of photosynthesis that occur in light, Photosystem I and Photosystem II.
+
+Use the following command to search for this pathway across all the bins
+
+```
+grep 'PWY-101' *.ec.report
+```
+contig_147.ec.report:path PWY-101 any n/a  naive 1  minpath 0  fam0  4  fam-found  1  name  photosynthesis light reactions
+
+metabat.26.ec.report:path PWY-101 any n/a  naive 1  minpath 1  fam0  4  fam-found  4  name  photosynthesis light reactions
+
+Question 4.1
+How many bins contain at least one gene from this pathway?
+Which bin has all of the genes (ie a complete pathway)?
+Cross reference your results with the output from gtdbtk to see the taxonomy of bins containing this pathway. Note that you will need to modify the commands below to use the correct bin numbers (these will be different for everyone).
+```
+grep 'metabat.26' ../gtdbtk/out/gtdbtk.bac120.summary.tsv
+```
+
+metabat.26      d__Bacteria;p__Cyanobacteria;c__Cyanobacteriia;o__Cyanobacteriales;f__Desertifilaceae;g__Roseofilum;s__Roseofilum reptotaenium_A       GCA_001890975.1 95.0  d__Bacteria;p__Cyanobacteria;c__Cyanobacteriia;o__Cyanobacteriales;f__Desertifilaceae;g__Roseofilum;s__Roseofilum reptotaenium_A        96.7    0.865   GCA_001890975.1 95.0  d__Bacteria;p__Cyanobacteria;c__Cyanobacteriia;o__Cyanobacteriales;f__Desertifilaceae;g__Roseofilum;s__Roseofilum reptotaenium_A        96.7    0.865   d__Bacteria;p__Cyanobacteria;c__Cyanobacteriia;o__Cyanobacteriales;f__Desertifilaceae;g__Roseofilum;s__      taxonomic classification defined by topology and ANI     topological placement and ANI have congruent species assignments       GCA_002340255.1, s__Roseofilum sp002340255, 95.0, 94.17, 0.87  90.21   11      N/A     N/A
+
+
+Question 4.2
+How many bins contain the pathway PWY-5360?
+What family (in a taxonomic sense) do these bins belong to?
