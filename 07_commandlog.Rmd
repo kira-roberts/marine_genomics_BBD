@@ -1,0 +1,101 @@
+---
+title: "Command_log"
+output: html_document
+date: "2026-07-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## ---- Assembly ----
+```bash
+ln -s /pvol/data/metagenome_assembly/bbd_0.1.fastq.gz .
+
+flye --nano-hq bbd_0.1.fastq.gz --threads 12 --out-dir bbd --meta #As slurm script, full script in separate file
+``` 
+
+
+## ---- Binning ----
+
+```bash
+cat ../flye/bbd/assembly_info.txt  | grep -v '#' | awk '{OFS="\t";print $1,$3}' > depths_bbd.txt
+
+cat ../flye/depths_bbd.txt | awk '{print $1}' | xargs samtools faidx ../flye/bbd/assembly.fasta > assembly_bbd_ordered.fasta
+
+metabat2 -i assembly_bbd_ordered.fasta -a depths_bbd.txt --cvExt -o bins_bbd/metabat --seed 5
+```
+
+## ---- Checkm ----
+```bash 
+cat ../flye/bbd/assembly.fasta | bioawk -c fastx '{print length($seq),$name}' | sort -n
+
+cp ../metabat/bins_bbd/*.fa bins_bbd/
+
+samtools faidx ../flye/bbd/assembly.fasta contig_147 > bins_bbd/contig_147.fa
+
+checkm lineage_wf bins_bbd out -t 4 -x fa -f checkm_results_bbd.txt #As slurm script, full script in separate file
+
+cat checkm_results_bbd.txt | awk '$13>15{print $1}' > bbd_topbins.txt
+```
+
+
+## ---- gtdbtk ----
+
+```bash 
+while read bin;do echo $bin;done < ../checkm/bbd_topbins.txt
+
+while read bin;do echo "../metabat/bins_bbd/${bin}.fa";done < ../checkm/bbd_topbins.txt
+
+while read bin;do cp "../metabat/bins_bbd/${bin}.fa" genomes;done < ../checkm/bbd_topbins.txt
+
+gtdbtk classify_wf -x fa --cpus 2 --genome_dir genomes --out_dir out --skip_ani_screen #As slurm script, full script in separate file
+```
+
+```r
+library(tidyverse)
+
+gtdbtk_result <- read_tsv("gtdbtk/out/gtdbtk.bac120.summary.tsv")
+```
+
+## ---- Prokka ----
+
+```bash 
+head -n 1 ../checkm/bbd_topbins.txt #To identify the bin used in the next step
+
+bin=metabat.26 
+
+prokka --outdir $bin --prefix $bin  ../metabat/bins_bbd/${bin}.fa
+
+while read bin;do 
+  prokka --outdir $bin --prefix $bin "../metabat/bins_bbd/${bin}.fa";
+done < ../checkm/bbd_topbins.txt  #As slurm script, full script in separate file
+```
+
+## ---- Pathways ----
+
+```bash 
+cat ../prokka/metabat.5/metabat.5.tsv | awk -F '\t' '$5{OFS="\t";print $1,$5}' | grep -v '^locus' > metabat.5.ec
+
+minpath -ec metabat.5.ec -report metabat.5.ec.report -details metabat.5.ec.details
+
+while read bin;do 
+  cat ../prokka/$bin/${bin}.tsv | awk -F '\t' '$5{printf("%s\t%s\n", $1,$5)}' | grep -v '^locus' > ${bin}.ec 
+done < ../checkm/bbd_topbins.txt
+
+while read bin;do 
+  minpath -ec ${bin}.ec -report ${bin}.ec.report -details ${bin}.ec.details
+done < ../checkm/bbd_topbins.txt
+
+grep 'PWY-101' *.ec.report
+
+grep 'PWY-5360' *.ec.report
+
+grep 'metabat.26' ../gtdbtk/out/gtdbtk.bac120.summary.tsv
+
+grep 'contig_147' ../gtdbtk/out/gtdbtk.bac120.summary.tsv
+```
+
+
+
+
