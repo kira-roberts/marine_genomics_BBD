@@ -1,5 +1,5 @@
 ---
-title: "02_gtdbtk.Rmd"
+title: "Gtdbtk"
 output: html_document
 date: "2026-07-15"
 ---
@@ -9,19 +9,21 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 ## Perform Taxonomic Classification with gtdbtk 
 
-
+```bash
 while read bin;do echo $bin;done < ../checkm/bbd_topbins.txt
 
 while read bin;do echo "../metabat/bins_bbd/${bin}.fa";done < ../checkm/bbd_topbins.txt
 
 
 while read bin;do cp "../metabat/bins_bbd/${bin}.fa" genomes;done < ../checkm/bbd_topbins.txt
+```
+These commands build several steps into one, each line of code compleates the one before it and adds more. The first line reads the bin name, and from there it constructs a path using that bin name and then copies the .fa file into a folder called "genomes" by the third line. 
+
 
 ```{r}
 library(tidyverse)
 gtdbtk_result <- read_tsv("gtdbtk/out/gtdbtk.bac120.summary.tsv")
-view(gtdbtk_result)
 ```
-
+This will put the results in a format that can be easily read.  
 
 
