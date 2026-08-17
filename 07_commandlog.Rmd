@@ -83,25 +83,26 @@ done < ../checkm/bbd_topbins.txt
 
 ```bash 
 cat ../prokka/metabat.26/metabat.26.tsv | awk -F '\t' '$5{OFS="\t";print $1,$5}' | grep -v '^locus' > metabat.26.ec
-# This pipe looks at the sequence from metabat.26 and 
+# This pipe looks at the tsv for metabat.26 and extracts the data from column 1 (it's unique ID) and column 5 (enzyme commission number) for all genes in a tab-separated format.
 
 minpath -ec metabat.26.ec -report metabat.26.ec.report -details metabat.26.ec.details
+# Using minpath to infer the minimum set of biological pathways that explain the sequence annotations.
 
 while read bin;do 
   cat ../prokka/$bin/${bin}.tsv | awk -F '\t' '$5{printf("%s\t%s\n", $1,$5)}' | grep -v '^locus' > ${bin}.ec 
 done < ../checkm/bbd_topbins.txt
+# This repeats the process that extracts the ID and enzyme commission number for all bins
 
 while read bin;do 
   minpath -ec ${bin}.ec -report ${bin}.ec.report -details ${bin}.ec.details
 done < ../checkm/bbd_topbins.txt
+# while this repeats the minpath code for each of the outputs
 
 grep 'PWY-101' *.ec.report
-
-grep 'PWY-5360' *.ec.report
+# Looking for the specific  photosynthesis light reactions pathway 
 
 grep 'metabat.26' ../gtdbtk/out/gtdbtk.bac120.summary.tsv
-
-grep 'contig_147' ../gtdbtk/out/gtdbtk.bac120.summary.tsv
+# Used to cross-reference the previous results with the gtdbtk outputs
 ```
 
 
